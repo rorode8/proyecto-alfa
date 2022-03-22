@@ -4,9 +4,11 @@ import main.server.ServerServer;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientInfo extends Thread{
     public int score;
@@ -47,9 +49,19 @@ public class ClientInfo extends Thread{
             int answer;
             while(gameOn){
                 answer = in.readInt();
+                System.out.println(answer);
                 game.hit(answer, this);
             }
-        } catch (IOException e) {
+        }catch (EOFException e){
+            //the thread TCP channel died on client's side
+            System.out.println("remote peer closed connection");
+            this.close();
+        }catch(SocketException e){
+            System.out.println("remote client disconnected");
+            this.close();
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+            this.close();
             e.printStackTrace();
         }
 
@@ -58,6 +70,18 @@ public class ClientInfo extends Thread{
     public void turnOff(){
 
         this.gameOn = false;
+
+        try {
+            out.close();
+            in.close();
+            clientSocket.close();
+            listenSocket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void close(){
 
         try {
             out.close();

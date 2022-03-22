@@ -38,6 +38,7 @@ public class ServerServer implements Server {
     public ServerInfo enterGame(String key) throws RemoteException {
 
         if(this.sessions.containsKey(key)){ //active game session
+            this.sessions.get(key).start(); //restart the thread
             return new ServerInfo(this.UDPport,this.sessions.get(key).tcpPort, 1, host);
         }else{ //new game session
             try {
@@ -85,15 +86,22 @@ public class ServerServer implements Server {
 
     public void start(){
         this.openMulticast();
+        System.out.println("starting in 4 seconds");
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        this.currentCell = random.nextInt(9);
+        this.sendMonster();
     }
 
     private void openMulticast(){
-        InetAddress group = null; // destination multicast group
-        MulticastSocket socket;
+        group = null; // destination multicast group
         try {
             group = InetAddress.getByName(host);
-            socket = new MulticastSocket(this.UDPport);
-            socket.joinGroup(group);
+            this.socket = new MulticastSocket(this.UDPport);
+            this.socket.joinGroup(group);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,6 +109,7 @@ public class ServerServer implements Server {
     }
 
     private void closeMulticast(){
+
         socket.close();
     }
 
@@ -114,5 +123,6 @@ public class ServerServer implements Server {
         }catch (Exception e){
             e.printStackTrace();
         }
+        System.out.println("sent monster at "+this.currentCell);
     }
 }
