@@ -101,6 +101,7 @@ public class ServerServer implements Server {
         try {
             group = InetAddress.getByName(host);
             this.socket = new MulticastSocket(this.UDPport);
+            this.socket.setTimeToLive(10);
             this.socket.joinGroup(group);
         } catch (Exception e) {
             e.printStackTrace();
