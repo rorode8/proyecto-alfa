@@ -172,6 +172,9 @@ public class Game extends JFrame {
         t.start();
     }
     public void setGoomba(int cell){
+        for(JButton btn: btns){
+            btn.setIcon(null);
+        }
         this.btns[cell].setIcon(this.goomba);
     }
 

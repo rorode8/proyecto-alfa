@@ -20,7 +20,7 @@ public class ServerServer implements Server {
     private int currentCell = -1;
     private Random random = new Random();
     private int n;
-    private static String host = "224.0.0.0";
+    private static String host = "224.0.0.1";
     private InetAddress group;
     private MulticastSocket socket;
 
