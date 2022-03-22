@@ -38,8 +38,14 @@ public class ServerServer implements Server {
     public ServerInfo enterGame(String key) throws RemoteException {
 
         if(this.sessions.containsKey(key)){ //active game session
-            this.sessions.get(key).start(); //restart the thread
-            return new ServerInfo(this.UDPport,this.sessions.get(key).tcpPort, 1, host);
+            try {
+                ClientInfo client = new ClientInfo(this.sessions.get(key).score,java.rmi.server.RemoteServer.getClientHost(), this);
+                client.start();
+                this.sessions.replace(key, client);
+                return new ServerInfo(this.UDPport,this.sessions.get(key).tcpPort, 1, host);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }else{ //new game session
             try {
                 ClientInfo client = new ClientInfo(0,java.rmi.server.RemoteServer.getClientHost(), this);

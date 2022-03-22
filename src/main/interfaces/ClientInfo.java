@@ -65,6 +65,7 @@ public class ClientInfo extends Thread{
             e.printStackTrace();
         }
 
+
     }
 
     public void turnOff(){
