@@ -24,6 +24,7 @@ public class ListenUDPThread extends Thread{
         try {
             InetAddress group = InetAddress.getByName(host); // destination multicast group
             socket = new MulticastSocket(port);
+            socket.setTimeToLive(200);
             socket.joinGroup(group);
             byte[] buffer = new byte[1];
             System.out.println("Waiting for messages");

@@ -14,8 +14,8 @@ public class ServerMain {
         Scanner scan = new Scanner(System.in);
         System.out.println("start the game by typing any character");
 
-        ServerServer game = new ServerServer(49159,9);
-        System.setProperty("java.rmi.server.hostname", "localhost");
+        ServerServer game = new ServerServer(25560,9);
+        System.setProperty("java.rmi.server.hostname", "192.168.100.55");
         LocateRegistry.createRegistry(1099);
         String serviceName = "Game";
         Server stub = (Server) UnicastRemoteObject.exportObject(game, 0);
