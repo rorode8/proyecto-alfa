@@ -12,7 +12,7 @@ import java.net.SocketException;
 
 public class ClientInfo extends Thread{
     public int score;
-    public String address;
+    public String name;
     public int tcpPort;
     private ServerServer game;
     private boolean gameOn;
@@ -23,7 +23,7 @@ public class ClientInfo extends Thread{
 
     public ClientInfo(int score, String address, ServerServer game) {
         this.score = score;
-        this.address = address;
+        this.name = address;
         this.game=game;
         this.gameOn = true;
         try {

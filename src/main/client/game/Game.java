@@ -171,6 +171,53 @@ public class Game extends JFrame {
         ThreadTest t = new ThreadTest(this);
         t.start();
     }
+
+    public void loadMenu(String winner) {
+        JPanel panel = new JPanel(new GridBagLayout());
+        JPanel inner = new JPanel(new GridBagLayout());
+        inner.setOpaque(false);
+        GridBagConstraints c2 = new GridBagConstraints();
+        panel.setBackground(Color.CYAN);
+        c2.gridx = 2;
+        c2.gridy=0;
+        c2.insets = new Insets(20,0,0,0);
+        JLabel lab = new JLabel("players", SwingConstants.CENTER);
+        lab.setFont(font);
+        inner.add(lab,c2);
+        c2.fill = GridBagConstraints.HORIZONTAL;
+        c2.ipadx = 260;
+        c2.ipady = 300;
+
+        c2.gridx=0;
+        c2.gridwidth = 3;
+        c2.gridheight = 2;
+        c2.gridy=1;
+        JTextArea ta = new JTextArea();
+        ta.setFont(font.deriveFont(20.0f));
+        ta.setEditable(false);
+        ta.setBackground(new Color(0x666666));
+        ta.setForeground(Color.WHITE);
+
+        //ta.setSize(260, 300);
+
+        ta.setText("The Winner is:\n"+winner);
+        inner.add(ta,c2);
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = c.CENTER;
+        //c.ipadx = 600;
+        panel.add(inner, c);
+
+        this.mainpanel.remove(start);
+        this.mainpanel.removeAll();
+        this.mainpanel.add(panel);
+        this.mainpanel.revalidate();
+        this.mainpanel.repaint();
+
+        ThreadTest t = new ThreadTest(this, 8000);
+        t.start();
+    }
+
+
     public void setGoomba(int cell){
         for(JButton btn: btns){
             btn.setIcon(null);
@@ -178,9 +225,8 @@ public class Game extends JFrame {
         this.btns[cell].setIcon(this.goomba);
     }
 
-    public void startGame() {
-        //start.setBackground(Color.BLUE);
-        this.sendtool.start();
+    private void loadgameGUI(){
+
 
         JPanel panel = new JPanel();
         GridLayout experimentLayout = new GridLayout(3,3);
@@ -205,9 +251,21 @@ public class Game extends JFrame {
         this.mainpanel.add(panel);
         this.mainpanel.revalidate();
         this.mainpanel.repaint();
+    }
+
+    public void startGame() {
+        //start.setBackground(Color.BLUE);
+        this.sendtool.start();
+        this.loadgameGUI();
 
 
+    }
 
+    /**
+     * TCP connection is already running
+     */
+    public void restartGame() {
+        this.loadgameGUI();
     }
 
 

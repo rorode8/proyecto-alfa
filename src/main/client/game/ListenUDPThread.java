@@ -25,14 +25,28 @@ public class ListenUDPThread extends Thread{
             InetAddress group = InetAddress.getByName(host); // destination multicast group
             socket = new MulticastSocket(port);
             socket.joinGroup(group);
-            byte[] buffer = new byte[1];
+
             System.out.println("Waiting for messages");
             while(online){
+                byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 System.out.println("waiting for UDP");
                 socket.receive(messageIn);
-                System.out.println("message: "+messageIn.getData().toString());
-                this.game.setGoomba((int)messageIn.getData()[0]);
+
+                String message = (new String(messageIn.getData())).trim();
+                String[] data = message.split(":");
+
+                System.out.println("message: "+message);
+
+                if (data[0].equalsIgnoreCase("monster")){
+                    this.game.setGoomba(Integer.parseInt(data[1]));
+                }else if (data[0].equalsIgnoreCase("winner")){
+                    //next message is the winner
+                    //set flag
+                    System.out.println("message: "+message);
+                    this.game.loadMenu(data[1]);
+                }
+
             }
             socket.leaveGroup(group);
             socket.close();

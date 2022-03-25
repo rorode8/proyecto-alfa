@@ -24,9 +24,14 @@ public class ServerMain {
         System.out.println("server online... ");
         scan.nextLine();
         game.start();
-        String input = "";
-        while (input!="quit"){
-            scan.nextLine();
+        String input = "y";
+        while (true){
+            input = scan.next();
+            if(input.equalsIgnoreCase("n") ){
+                System.out.println("goodbye");
+                break;
+            }
+            game.start();
         }
     }
 

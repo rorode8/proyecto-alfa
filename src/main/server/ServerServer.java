@@ -25,21 +25,24 @@ public class ServerServer implements Server {
     private MulticastSocket socket;
 
     public ServerServer(int UDPport, int n){
+
         this.sessions = new HashMap<String, ClientInfo>();
         this.UDPport = UDPport;
         this.n = n;
         this.group = null;
         this.socket = null;
+        this.openMulticast();
 
     }
 
 
     @Override
     public ServerInfo enterGame(String key) throws RemoteException {
-
+        System.out.println(key);
         if(this.sessions.containsKey(key)){ //active game session
             try {
-                ClientInfo client = new ClientInfo(this.sessions.get(key).score,java.rmi.server.RemoteServer.getClientHost(), this);
+                System.out.println(java.rmi.server.RemoteServer.getClientHost());
+                ClientInfo client = new ClientInfo(this.sessions.get(key).score,key, this);
                 client.start();
                 this.sessions.replace(key, client);
                 return new ServerInfo(this.UDPport,this.sessions.get(key).tcpPort, 1, host);
@@ -48,7 +51,8 @@ public class ServerServer implements Server {
             }
         }else{ //new game session
             try {
-                ClientInfo client = new ClientInfo(0,java.rmi.server.RemoteServer.getClientHost(), this);
+                System.out.println(java.rmi.server.RemoteServer.getClientHost());
+                ClientInfo client = new ClientInfo(0,key, this);
                 client.start();
                 this.sessions.put(key, client);
                 return new ServerInfo(this.UDPport,client.tcpPort, 0, host);
@@ -80,6 +84,9 @@ public class ServerServer implements Server {
             client.score+=1;
             if(client.score >= this.n){
                 this.currentCell = -1;
+                this.sendWinner(client.name);
+                this.restart();
+                System.out.println("to quit press n, to play press any key");
             }else{
                 this.currentCell = random.nextInt(9);
                 this.sendMonster();
@@ -91,7 +98,7 @@ public class ServerServer implements Server {
     }
 
     public void start(){
-        this.openMulticast();
+
         System.out.println("starting in 4 seconds");
         try {
             Thread.sleep(4000);
@@ -122,7 +129,8 @@ public class ServerServer implements Server {
 
     public void sendMonster(){
         Integer monster = this.currentCell;
-        byte[] m = {monster.byteValue()};
+        String message = "monster:"+this.currentCell;
+        byte[] m = message.getBytes();
         try{
             DatagramPacket messageOut =
                     new DatagramPacket(m, m.length, group, this.UDPport);
@@ -132,4 +140,16 @@ public class ServerServer implements Server {
         }
         System.out.println("sent monster at "+this.currentCell);
     }
+    private void sendWinner(String winner){
+        String message = "winner:"+winner.split("/")[0];
+        byte[] m = message.getBytes();
+        try{
+            DatagramPacket messageOut =
+                    new DatagramPacket(m, m.length, group, this.UDPport);
+            socket.send(messageOut);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }
