@@ -72,7 +72,6 @@ public class ServerServer implements Server {
 
     public void end(){
         sessions.values().forEach(client -> {
-            client.stop();
             client.turnOff();
         });
         this.sessions = new HashMap<String, ClientInfo>();

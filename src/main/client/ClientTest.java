@@ -26,9 +26,10 @@ public class ClientTest extends Thread{
     public UDPInput udpThread;
     public TCPoutput output;
     public ArrayList<Long> tiempos;
-    public long tiempoRegistro;
+    public long tiempoRegistro = 0;
 
     public ClientTest(String hostaddress, String playername){
+        tiempos = new ArrayList<>();
         this.host = hostaddress;
 
         // TODO Auto-generated method stub
@@ -41,6 +42,7 @@ public class ClientTest extends Thread{
             this.tiempoRegistro = System.currentTimeMillis() - t0;
             this.output = new TCPoutput(this.info.getTCPPort(),hostaddress);
             this.udpThread = new UDPInput(this.info.getHostAddress(), this.info.getUDPPort(), this);
+            this.udpThread.start();
         } catch (Exception ex) {
             ex.printStackTrace();
 
@@ -60,9 +62,22 @@ public class ClientTest extends Thread{
         }
         return sum/tiempos.size();
     }
+    private double getStd(double mean){
+        double sum = 0;
+        for(long tiempo: this.tiempos){
+            sum+=Math.pow((tiempo-mean),2);
+        }
+        sum = sum/tiempos.size();
+        return Math.pow(sum,0.5);
+    }
 
-    public void getStats(){
-
+    public double[] getStats(){
+        double mean = this.getMean();
+        double std  = this.getStd(mean);
+        double registerTime = this.tiempoRegistro;
+        double iters = tiempos.size();
+        double[] ans = {mean, std, iters, registerTime};
+        return ans;
     }
 
 }

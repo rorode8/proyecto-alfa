@@ -39,9 +39,7 @@ public class UDPInput extends Thread{
                 if (data[0].equalsIgnoreCase("monster")){
                     this.client.sendInput(Integer.parseInt(data[1]));
                 }else if (data[0].equalsIgnoreCase("winner")){
-                    //this.game.loadMenu(data[1]);
                     this.online = false;
-                    //this.client;
                 }
 
             }
