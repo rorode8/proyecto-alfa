@@ -27,14 +27,13 @@ public class ClientInfo extends Thread{
         this.game=game;
         this.gameOn = true;
         try {
+            //automatically assign a free port
             this.listenSocket = new ServerSocket(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //save the port
         this.tcpPort = this.listenSocket.getLocalPort();
-
-
-
     }
 
 
@@ -53,10 +52,11 @@ public class ClientInfo extends Thread{
                 game.hit(answer, this);
             }
         }catch (EOFException e){
-            //the thread TCP channel died on client's side
+            //remote TCP client closed the connection
             System.out.println("remote peer closed connection");
             this.close();
         }catch(SocketException e){
+            //the connection was interrupted abruptly
             System.out.println("remote client disconnected");
             this.close();
         }catch (Exception e) {

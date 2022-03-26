@@ -1,18 +1,30 @@
 package main.client.game;
 
-public class ThreadTest extends Thread {
+/**
+ * this class only exists because changing the JFrame layout in a single thread
+ * has unexpected behaviour
+ */
+public class SmoothTransitioner extends Thread {
     private Game game;
     private static final int DEFAULTTIME = 2000;
     private int time = DEFAULTTIME;
 
 
-
-    public ThreadTest(Game game) {
+    /**
+     * initializes game with default 2000 time
+     * @param game
+     */
+    public SmoothTransitioner(Game game) {
         super();
         this.game = game;
     }
 
-    public ThreadTest(Game game, int time) {
+    /**
+     * initializes game with custom time
+     * @param game
+     * @param time
+     */
+    public SmoothTransitioner(Game game, int time) {
         super();
         this.game = game;
         this.time = time;
@@ -29,11 +41,7 @@ public class ThreadTest extends Thread {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        if(time==DEFAULTTIME){
-            game.startGame();
-        }else{
-            game.restartGame();
-        }
+        game.startGame();
 
     }
 

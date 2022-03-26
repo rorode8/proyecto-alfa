@@ -24,6 +24,12 @@ public class ServerServer implements Server {
     private InetAddress group;
     private MulticastSocket socket;
 
+    /**
+     * n is the number of points to win the round
+     * TCP ports get generated per client on demand
+     * @param UDPport
+     * @param n
+     */
     public ServerServer(int UDPport, int n){
 
         this.sessions = new HashMap<String, ClientInfo>();

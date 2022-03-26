@@ -41,9 +41,6 @@ public class ListenUDPThread extends Thread{
                 if (data[0].equalsIgnoreCase("monster")){
                     this.game.setGoomba(Integer.parseInt(data[1]));
                 }else if (data[0].equalsIgnoreCase("winner")){
-                    //next message is the winner
-                    //set flag
-                    System.out.println("message: "+message);
                     this.game.loadMenu(data[1]);
                 }
 
@@ -51,7 +48,7 @@ public class ListenUDPThread extends Thread{
             socket.leaveGroup(group);
             socket.close();
         } catch (Exception e) {
-            System.out.println("Socket: " + e.getMessage());
+            System.out.println("Error while listening UDP: " + e.getMessage());
         }
 
     }

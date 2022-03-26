@@ -23,7 +23,6 @@ public class ClickListener implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         btn.setIcon(null);
         game.sendtool.sendNum(this.coordinate);
-        System.out.println(this.coordinate);
     }
 
 }

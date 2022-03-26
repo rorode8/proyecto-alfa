@@ -1,7 +1,6 @@
 package main.client.game;
 
 import main.interfaces.Server;
-import main.interfaces.ServerInfo;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,7 +30,7 @@ public class SubmitListener implements ActionListener {
             registry = LocateRegistry.getRegistry(game.textField.getText());
             game.gameServer = (Server) registry.lookup("Game");
             game.info = game.gameServer.enterGame(InetAddress.getLocalHost().toString());
-            game.sendtool = new SendingTCPThread(game.info.getTCPPort(),game.textField.getText());
+            game.sendtool = new TCPClient(game.info.getTCPPort(),game.textField.getText());
             game.listentool = new ListenUDPThread(game.info.getHostAddress(),game.info.getUDPPort(), game);
             game.listentool.start();
         } catch (RemoteException ex) {

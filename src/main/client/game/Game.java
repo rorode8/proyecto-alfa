@@ -39,11 +39,18 @@ public class Game extends JFrame {
     public JTextField textField = null;
     public Server gameServer;
     public ServerInfo info;
-    public SendingTCPThread sendtool;
+    public TCPClient sendtool;
     public ListenUDPThread listentool;
     public JButton[] btns = new JButton[9];
     private Icon goomba = null;
 
+    /**
+     * initializes game and waits for user to input
+     * the host ip address from which it will acquire
+     * all other information like multicast address and TCP and UDP ports
+     *  the game tries to launch when the submit button is clicked
+     * @param title
+     */
     public Game(String title) {
 
         super(title);
@@ -65,15 +72,11 @@ public class Game extends JFrame {
         } catch(FontFormatException e) {
             e.printStackTrace();
         }
-        //this.setLocationRelativeTo(null);
 
         mainpanel = new JPanel(new GridLayout(1,1));
         this.add(mainpanel);
         mainpanel.setFont(font);
         start = new JPanel(new GridBagLayout());
-
-        //this.startGame();
-
 
         JPanel inner = new JPanel(new GridBagLayout());
         inner.setOpaque(false);
@@ -101,8 +104,7 @@ public class Game extends JFrame {
         c2.gridy=2;
         c2.gridx=2;
         c2.gridwidth = 1;
-        //c2.anchor = GridBagConstraints.CENTER;
-        //btn.setPreferredSize(new Dimension(40,40));
+
         btn.addActionListener(new SubmitListener(this));
         inner.add(btn,c2);
         GridBagConstraints c = new GridBagConstraints();
@@ -127,7 +129,12 @@ public class Game extends JFrame {
 
 
     }
-    public void loadMenu() {
+
+    /**
+     * draws menu components on menu and starts game
+     * a few moments later
+     */
+    private void drawMenu(String messageText){
         JPanel panel = new JPanel(new GridBagLayout());
         JPanel inner = new JPanel(new GridBagLayout());
         inner.setOpaque(false);
@@ -153,13 +160,10 @@ public class Game extends JFrame {
         ta.setBackground(new Color(0x666666));
         ta.setForeground(Color.WHITE);
 
-        //ta.setSize(260, 300);
-
-        ta.setText("waiting for\nserver");
+        ta.setText(messageText);
         inner.add(ta,c2);
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = c.CENTER;
-        //c.ipadx = 600;
         panel.add(inner, c);
 
         this.mainpanel.remove(start);
@@ -167,53 +171,24 @@ public class Game extends JFrame {
         this.mainpanel.add(panel);
         this.mainpanel.revalidate();
         this.mainpanel.repaint();
+    }
 
-        ThreadTest t = new ThreadTest(this);
+    /**
+     * loads menu waiting for server
+     */
+    public void loadMenu() {
+        drawMenu("waiting for\nserver");
+        SmoothTransitioner t = new SmoothTransitioner(this);
         t.start();
     }
 
+    /**
+     * loads menu with a winner showing on screen
+     * @param winner
+     */
     public void loadMenu(String winner) {
-        JPanel panel = new JPanel(new GridBagLayout());
-        JPanel inner = new JPanel(new GridBagLayout());
-        inner.setOpaque(false);
-        GridBagConstraints c2 = new GridBagConstraints();
-        panel.setBackground(Color.CYAN);
-        c2.gridx = 2;
-        c2.gridy=0;
-        c2.insets = new Insets(20,0,0,0);
-        JLabel lab = new JLabel("players", SwingConstants.CENTER);
-        lab.setFont(font);
-        inner.add(lab,c2);
-        c2.fill = GridBagConstraints.HORIZONTAL;
-        c2.ipadx = 260;
-        c2.ipady = 300;
-
-        c2.gridx=0;
-        c2.gridwidth = 3;
-        c2.gridheight = 2;
-        c2.gridy=1;
-        JTextArea ta = new JTextArea();
-        ta.setFont(font.deriveFont(20.0f));
-        ta.setEditable(false);
-        ta.setBackground(new Color(0x666666));
-        ta.setForeground(Color.WHITE);
-
-        //ta.setSize(260, 300);
-
-        ta.setText("The Winner is:\n"+winner);
-        inner.add(ta,c2);
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = c.CENTER;
-        //c.ipadx = 600;
-        panel.add(inner, c);
-
-        this.mainpanel.remove(start);
-        this.mainpanel.removeAll();
-        this.mainpanel.add(panel);
-        this.mainpanel.revalidate();
-        this.mainpanel.repaint();
-
-        ThreadTest t = new ThreadTest(this, 8000);
+        drawMenu("the winner is: \n"+winner);
+        SmoothTransitioner t = new SmoothTransitioner(this, 8000);
         t.start();
     }
 
@@ -255,20 +230,11 @@ public class Game extends JFrame {
 
     public void startGame() {
         //start.setBackground(Color.BLUE);
-        this.sendtool.start();
+        //this.sendtool.start();
         this.loadgameGUI();
 
 
     }
-
-    /**
-     * TCP connection is already running
-     */
-    public void restartGame() {
-        this.loadgameGUI();
-    }
-
-
 
 }
 
