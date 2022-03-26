@@ -40,6 +40,7 @@ public class UDPInput extends Thread{
                     this.client.sendInput(Integer.parseInt(data[1]));
                 }else if (data[0].equalsIgnoreCase("winner")){
                     this.online = false;
+                    //this.client.output.end();
                 }
 
             }

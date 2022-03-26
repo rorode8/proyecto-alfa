@@ -13,11 +13,11 @@ import java.rmi.server.UnicastRemoteObject;
 public class Deployer {
     public static void main(String[] args) throws RemoteException {
         int numClientes = 10;
-        int numRoudns = 10;
+        int numRounds = 10;
 
         String address = "localhost";
         System.out.println("start the game by typing any character");
-        ServerServer game = new ServerServer(25560,numRoudns);
+        ServerServer game = new ServerServer(25560,numRounds);
         System.setProperty("java.rmi.server.hostname", address);
         LocateRegistry.createRegistry(1099);
         String serviceName = "Game";
@@ -27,11 +27,10 @@ public class Deployer {
         System.out.println("server online... ");
 
         //clients here
-        ClientTest[] clientes = new ClientTest[50];
+        ClientTest[] clientes = new ClientTest[numClientes];
         for(int i=0; i<numClientes;i++){
             clientes[i] = new ClientTest(address, "player"+i);
         }
-
         game.start();
 
         try {
@@ -39,7 +38,7 @@ public class Deployer {
                 clientes[i].udpThread.join();
             }
             game.end();
-            Thread.sleep(5000);
+            Thread.sleep(2000);
 
 
         } catch (Exception e) {
