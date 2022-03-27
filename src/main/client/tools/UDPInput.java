@@ -32,7 +32,7 @@ public class UDPInput extends Thread{
                 byte[] buffer = new byte[1000];
                 DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
                 socket.receive(messageIn);
-
+                //<tipo>:<value>
                 String message = (new String(messageIn.getData())).trim();
                 String[] data = message.split(":");
 

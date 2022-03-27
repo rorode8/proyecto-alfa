@@ -12,8 +12,9 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Deployer {
     public static void main(String[] args) throws RemoteException {
-        int numClientes = 10;
-        int numRounds = 10;
+        int numClientes = 100;
+        double[] values = new double[4];
+        int numRounds = 20;
 
         String address = "localhost";
         System.out.println("start the game by typing any character");
@@ -46,8 +47,22 @@ public class Deployer {
         }
         for(int i=0; i<numClientes;i++){
             double[] stats = clientes[i].getStats();
-            System.out.println(stats[0]+","+stats[1]+","+stats[2]+","+stats[3]);
+            values[0]+=stats[0];
+            values[1]+=stats[1];
+            values[2]+=stats[2];
+            values[3]+=stats[3];
+            //System.out.println(stats[0]+","+stats[1]+","+stats[2]+","+stats[3]);
         }
+        double rmistd = 0;
+        double rmiavg = values[3]/numClientes;
+        for(int i=0; i<numClientes;i++){
+
+            rmistd+=Math.pow((clientes[i].tiempoRegistro-rmiavg),2);
+            rmistd = rmistd/numClientes;
+            rmistd = Math.pow(rmistd,0.5);
+        }
+
+        System.out.println(values[0]/numClientes+"\n"+values[1]/numClientes+"\n"+values[2]/numClientes+"\n"+values[3]/numClientes+"\n"+rmistd);
         try {
             registry.unbind(serviceName);
 
@@ -60,4 +75,6 @@ public class Deployer {
         }
 
     }
+
+
 }
