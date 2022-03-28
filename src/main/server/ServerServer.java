@@ -23,6 +23,7 @@ public class ServerServer implements Server {
     private static String host = "224.0.0.1";
     private InetAddress group;
     private MulticastSocket socket;
+    private ServerClock clock;
 
     /**
      * n is the number of points to win the round
@@ -31,7 +32,7 @@ public class ServerServer implements Server {
      * @param n
      */
     public ServerServer(int UDPport, int n){
-
+        this.clock = null;
         this.sessions = new HashMap<String, ClientInfo>();
         this.UDPport = UDPport;
         this.n = n;
@@ -88,11 +89,13 @@ public class ServerServer implements Server {
         if(cell == currentCell){
             client.score+=1;
             if(client.score >= this.n){
+                this.clock.finish = true;
                 this.currentCell = -1;
                 this.sendWinner(client.name);
                 this.restart();
                 System.out.println("to quit press n, to play press any key");
             }else{
+                this.clock.t = System.currentTimeMillis();
                 this.currentCell = random.nextInt(9);
                 this.sendMonster();
             }
@@ -103,13 +106,14 @@ public class ServerServer implements Server {
     }
 
     public void start(){
-
         System.out.println("starting in 4 seconds");
         try {
             Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        clock = new ServerClock(this);
+        clock.start();
         this.currentCell = random.nextInt(9);
         this.sendMonster();
     }

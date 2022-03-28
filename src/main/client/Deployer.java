@@ -12,7 +12,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Deployer {
     public static void main(String[] args) throws RemoteException {
-        int numClientes = 100;
+        int numClientes = 2000;
         double[] values = new double[4];
         int numRounds = 20;
 
